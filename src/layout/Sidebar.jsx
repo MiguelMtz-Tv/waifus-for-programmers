@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Sidebar() {
+function Sidebar({onData}) {
   const WAIFUS_ENDPOINT = 'https://api.github.com/repos/cat-milk/Anime-Girls-Holding-Programming-Books/contents/';
   const [langs, setLangs] = useState([]);
   
@@ -8,7 +8,6 @@ function Sidebar() {
     fetch(WAIFUS_ENDPOINT)
     .then(res => res.json())
     .then(data => {
-      console.log(data)
       let lang = [];
       for(let i = 0; i < data.length; i++){
         if(data[i].name != '.DS_Store' && data[i].name != 'README.md' && data[i].name != 'CONTRIBUTING.md'){
@@ -22,6 +21,10 @@ function Sidebar() {
       setLangs(lang);
     })
   }, []);
+
+  function selectLang(data){
+    onData(data);
+  }
 
   return (
     <div>
@@ -70,13 +73,11 @@ function Sidebar() {
           <ul className="space-y-2 font-medium">
             {langs.map((lang) => {
               return (
-                <li>
-                  <a
-                    href={lang.path}
-                    className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
+                <li key={lang.name}
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:cursor-pointer"
+                onClick={() => selectLang(lang.path)}
+                >
                     <span className="ml-3">{lang.name}</span>
-                  </a>
                 </li>
               );
             })}
